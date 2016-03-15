@@ -1,0 +1,4 @@
+---
+- name: Run /bin/true
+  command: /bin/true
+

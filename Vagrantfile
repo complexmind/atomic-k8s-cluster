@@ -13,7 +13,7 @@ Vagrant.configure(2) do |config|
     master_config.vm.network "private_network", ip: "192.168.122.10"
 
     master_config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "provisioning/playbook.yml"
+      ansible.playbook = "provisioning/provision.yml"
     end
   end
 
@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
     node_config.vm.network "private_network", ip: "192.168.122.11"
 
     node_config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "provisioning/playbook.yml"
+      ansible.playbook = "provisioning/provision.yml"
     end
   end
 

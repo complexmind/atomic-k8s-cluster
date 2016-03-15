@@ -1,0 +1,26 @@
+---
+- name: Create local docker registry
+  become: yes
+  docker:
+    name: local-registry
+    image: registry:2
+    state: started
+    expose:
+    - 5000:5000
+    volumes:
+    - /var/lib/local-registry:/var/lib/registry
+    env:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+      REGISTRY_PROXY_REMOTEURL: https://registry-1.docker.io
+
+- name: Change setype of /var/lib/local-registry to svirt_sandbox_file_t
+  become: yes
+  file: path=/var/lib/local-registry setype=svirt_sandbox_file_t
+
+- name: Install a unit file to enable systemd management of local-registry
+  become: yes
+  copy: src=local-registry.service dest=/etc/systemd/system owner=root mode=0644
+  notify:
+    - reload systemd
+    - enable and start local-registry service
+

@@ -1,0 +1,69 @@
+---
+- name: Configure etcd.conf
+  become: yes
+  lineinfile:
+    dest: /etc/etcd/etcd.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^ETCD_LISTEN_CLIENT_URLS', line: 'ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001"' }
+    - { regexp: '^ETCD_ADVERTISE_CLIENT_URLS', line: 'ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001"' }
+
+- name: Configure KUBE_MASTER in /etc/kubernetes/config
+  become: yes
+  lineinfile:
+    dest: /etc/kubernetes/config
+    regexp: '^KUBE_MASTER'
+    line: 'KUBE_MASTER="--master=http://192.168.122.10:8080"'
+
+- name: Configure KUBE_ETCD_SERVERS in /etc/kubernetes/config
+  become: yes
+  blockinfile:
+    dest: /etc/kubernetes/config
+    block: |
+
+      # Comma separated list of nodes in the etcd cluster
+      KUBE_ETCD_SERVERS="--etcd_servers=http://192.168.122.10:2379"
+
+- name: Configure KUBE_API_ADDRESS in /etc/kubernetes/apiserver
+  become: yes
+  lineinfile:
+    dest: /etc/kubernetes/apiserver
+    regexp: '^KUBE_API_ADDRESS'
+    line: 'KUBE_API_ADDRESS="--address=0.0.0.0"'
+
+- name: Remove ServiceAccount from KUBE_ADMISSION_CONTROL in /etc/kubernetes/apiserver TESTING MODE
+  become: yes
+  lineinfile:
+    dest: /etc/kubernetes/apiserver
+    regexp: '^KUBE_ADMISSION_CONTROL'
+    line: 'KUBE_ADMISSION_CONTROL="--admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota"'
+
+- name: Enable and start etcd
+  become: yes
+  service:
+    name: etcd
+    state: started
+    enabled: yes
+
+- name: Enable and start kube-apiserver
+  become: yes
+  service:
+    name: kube-apiserver
+    state: started
+    enabled: yes
+
+- name: Enable and start kube-controller-manager
+  become: yes
+  service:
+    name: kube-controller-manager
+    state: started
+    enabled: yes
+
+- name: Enable and start kube-scheduler
+  become: yes
+  service:
+    name: kube-scheduler
+    state: started
+    enabled: yes
+

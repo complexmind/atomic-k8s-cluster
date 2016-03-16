@@ -1,0 +1,4 @@
+#!/bin/bash
+
+curl -s -L "{{ flannel_key_url  }}" -XPUT -d value='\{"Network": "{{ flannel_network }}", "SubnetLen": "{{ flannel_subnet_ln }}", "Backend": \{"Type": "{{ flannel_backend }}"\}\}'
+

@@ -1,0 +1,6 @@
+---
+flannel_key_url: "http://localhost:2379/v2/keys/atomic01/network/config"
+flannel_network: "172.16.0.0/16"
+flannel_subnet_ln: 24
+flannel_backend: "vxlan"
+

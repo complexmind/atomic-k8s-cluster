@@ -1,4 +1,16 @@
 #!/bin/bash
 
-curl -s -L "{{ flannel_key_url  }}" -XPUT -d value='\{"Network": "{{ flannel_network }}", "SubnetLen": "{{ flannel_subnet_ln }}", "Backend": \{"Type": "{{ flannel_backend }}"\}\}'
+cat <<EOF >flanneld-conf.json
+{
+  "Network": "{{ flannel_network }}",
+  "SubnetLen": {{ flannel_subnet_ln }},
+  "Backend": {
+    "Type": "{{ flannel_backend }}"
+  }
+}
+EOF
+
+curl -L "{{ flannel_key_url  }}" -XPUT --data-urlencode value@flanneld-conf.json
+
+rm -f flanneld-conf.json
 

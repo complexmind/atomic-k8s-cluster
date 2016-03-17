@@ -1,0 +1,9 @@
+---
+- name: Reload systemd
+  become: yes
+  command: systemctl daemon-reload
+
+- name: Enable and start flanneld service
+  become: yes
+  service: name=flanneld state=started enabled=yes
+

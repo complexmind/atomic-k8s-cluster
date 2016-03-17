@@ -2,8 +2,16 @@
 - hosts: all
   roles:
      - common
+
 - hosts: master
   roles:
      - local-registry
      - k8s-master
      - flannel-master
+
+- hosts: node
+  roles:
+     - registry-cache-client
+     - flannel-client
+     - k8s-minion
+

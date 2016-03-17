@@ -1,0 +1,25 @@
+---
+- name: Configure /etc/kubernetes/kubelet
+  become: yes
+  lineinfile:
+    dest: /etc/kubernetes/kubelet
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^KUBELET_ADDRESS', line: 'KUBELET_ADDRESS="--address=192.168.122.11"' }
+    - { regexp: '^KUBELET_HOSTNAME', line: 'KUBELET_HOSTNAME="--hostname_override=192.168.122.11"' }
+    - { regexp: '^KUBELET_API_SERVER', line: 'KUBELET_API_SERVER="--api_servers=http://192.168.122.10:8080"' }
+  notify:
+    - Reload systemd
+    - Enable and start kubelet service
+
+- name: Configure /etc/kubernetes/config
+  become: yes
+  lineinfile:
+    dest: /etc/kubernetes/config
+    regexp: '^KUBE_MASTER'
+    line: 'KUBE_MASTER="--master=http://192.168.122.10:8080"'
+  notify:
+    - Reload systemd
+    - Enable and start kube-proxy service
+

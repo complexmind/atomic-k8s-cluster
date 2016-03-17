@@ -1,0 +1,8 @@
+---
+- name: Configure docker to use cluster registry cache
+  become: yes
+  lineinfile:
+    dest: /etc/sysconfig/docker
+    regexp: '^OPTIONS'
+    line: 'OPTIONS="--registry-mirror=http://192.168.122.10:5000 --selinux-enabled"'
+

@@ -1,0 +1,21 @@
+---
+- name: Configure flannel to use cluster etcd server
+  become: yes
+  lineinfile:
+    dest: /etc/sysconfig/flanneld
+    regexp: '^FLANNEL_ETCD'
+    line: 'FLANNEL_ETCD="http://192.168.122.10:2379"'
+  notify:
+    - Reload systemd
+    - Enable and start flanneld service
+
+- name: Configure flannel etcd key
+  become: yes
+  lineinfile:
+    dest: /etc/sysconfig/flanneld
+    regexp: '^FLANNEL_ETCD_KEY'
+    line: 'FLANNEL_ETCD_KEY="/atomic01/network"'
+  notify:
+    - Reload systemd
+    - Enable and start flanneld service
+
